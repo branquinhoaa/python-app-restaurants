@@ -19,10 +19,25 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.end_headers()
             restaurants = session.query(Restaurant).all()
             message = ""
-            message += "<html><body>All The restaurants!<a href = '/hello'>Back to Hello</a>"
+            message += "<html><body>All The restaurants!<a href = '/new_restaurant'>Create a new one</a>"
             for i in restaurants:
                 message += "<li>%s <a href = '/edit'>Edit</a> <a href = '/delete'>Delete</a></li>" %str(i.name)
            
+            message += "</body></html>"
+            self.wfile.write(message)
+            print message
+            return
+        else:
+            self.send_error(404, 'File Not Found: %s' % self.path)
+
+    def do_GET(self):
+        if self.path.endswith("/new_restaurant"):
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            message = ""
+            message += "<html><body>Make a  new restaurant!<a href = '/restaurants'>Back to restaurants page</a>"
+            message += '''<form method='POST' enctype='multipart/form-data' action='/restaurant'><h2>Put here the restaurant name</h2><input name="message" type="text" ><input type="submit" value="Submit"> </form>'''
             message += "</body></html>"
             self.wfile.write(message)
             print message
