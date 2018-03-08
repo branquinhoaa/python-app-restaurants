@@ -27,10 +27,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.wfile.write(message)
             print message
             return
-        else:
-            self.send_error(404, 'File Not Found: %s' % self.path)
-
-    def do_GET(self):
+      
         if self.path.endswith("/new_restaurant"):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')

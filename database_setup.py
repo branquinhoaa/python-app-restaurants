@@ -34,11 +34,11 @@ engine = create_engine('sqlite:///restaurants_for_list.db')
 Base.metadata.create_all(engine)
 
 
-#DBSession = sessionmaker(bind=engine)
+DBSession = sessionmaker(bind=engine)
 
-#session = DBSession()
+session = DBSession()
 
-#for i in range(10):
-#    restaurant = Restaurant(name="Restaurante%i"%i)
-#    session.add(restaurant)
-#    session.commit()
+for i in range(10):
+    restaurant = Restaurant(name="Restaurante%i"%i)
+    session.add(restaurant)
+    session.commit()
