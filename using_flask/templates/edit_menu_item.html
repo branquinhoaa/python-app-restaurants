@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+    <h1>Edit here your menu item</h1>
+    <form action="" method="post">
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(size=32) }}
+        </p>
+        <p>
+            {{ form.course.label }}<br>
+            {{ form.course(size=32) }}
+        </p>
+        <p>
+            {{ form.price.label }}<br>
+            {{ form.price(size=32) }}
+        </p>
+        <p>{{ form.description() }} {{ form.description.label }}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
