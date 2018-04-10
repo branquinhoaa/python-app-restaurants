@@ -3,26 +3,22 @@
     <head>
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
     </head>
-<h1> Edit Menu Item </h1>
+<h1> Edit Restaurant </h1>
 
-<form action="{{url_for('editMenuItem', restaurant_id=restaurant_id, item_id=item_id )}}" method = 'POST'>
+<form action="{{url_for('editRestaurant', restaurant_id=restaurant_id)}}" method = 'POST'>
 
 <p>Name:</p>
 
-<input type='text' size='30' name='name' placeholder='{{item.name}}'>
+<input type='text' size='30' name='name' placeholder='{{restaurant.name}}'>
 
-<p>course:</p>
+<p>Address:</p>
 
 <input type='text' size='30' name='course'>
 
 
-<p>description:</p>
+<p>Stars:</p>
 
 <input type='text' size='30' name='description'>
-
-<p>price:</p>
-
-<input type='text' size='30' name='price'>
 
 
 <input type='submit' value='Edit'>

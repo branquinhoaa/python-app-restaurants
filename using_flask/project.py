@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 
@@ -14,6 +14,9 @@ db = SQLAlchemy(app)
 class Restaurant(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(80), nullable=False)
+  address = db.Column(db.String(80))
+  stars = db.Column(db.Integer)
+
 
 
 class MenuItem(db.Model):
@@ -26,65 +29,61 @@ class MenuItem(db.Model):
   restaurant = db.relationship(Restaurant)
 
 ############################################################################
+               # HERE STARTS THE ROUTES FOR RESTAURANTS #
+############################################################################
 
-# THE FUNCTIONS HERE ARE THE MAIN OPERATIONS THAT CAN BE DONE WITH MY RESTAURANTS
 
 @app.route('/')
 def allRestaurants():
   restaurant = db.session.query(Restaurant).filter_by(id=1).one()
   items = db.session.query(MenuItem).filter_by(restaurant_id=restaurant.id)
-
   return render_template('main_page.html', restaurant=restaurant, items=items)
+
 
 @app.route('/restaurants/<int:restaurant_id>/')
 def restaurant(restaurant_id):
   restaurant = db.session.query(Restaurant).filter_by(id=restaurant_id).one()
   items = db.session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
-  edit = '/restaurants/edit/%i'%restaurant_id
-  delete = '/restaurants/delete/%i'%restaurant_id
-  output = '<h1>%s</h1>'%restaurant.name
-  output += '<a href = %s>Edit</a> </br>'%edit
-  output += '<a href = %s>Delete</a></br>'%delete
-
-  for i in items:
-    output += '<li>%s - %s : $ %s</li>'%(i.name, i.description, i.price)
-    output += '</br>'
-  return output
+  return render_template('restaurant_menu.html')
 
 
-@app.route('/restaurants/edit/<int:restaurant_id>/')
-def restaurant_edit(restaurant_id):
+@app.route('/restaurants/new', methods=['GET', 'POST'])
+def newRestaurant():
+  if request.method == 'POST':
+    newRestaurant = Restaurant(name=request.form['name'], address=request.form['address'], stars=request.form['stars'])
+    db.session.add(newRestaurant)
+    db.session.commit()
+    flash("this restaurant was successfully created!")
+    return redirect(url_for('allRestaurants'))
+  else:
+    return render_template('new_restaurant.html')
+
+
+@app.route('/restaurants/edit/<int:restaurant_id>/', methods=['GET', 'POST'])
+def editRestaurant(restaurant_id):
   restaurant = db.session.query(Restaurant).filter_by(id=restaurant_id).one()
   items = db.session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
-  url = '/restaurants/update/<int:restaurant_id>/'
-  message = ""
-  message += "<h1>Edit your restaurant!</h1>"
-  message += '''<form method='POST' enctype='multipart/form-data' action=%s>
-  <h2>Change here the restaurant name</h2><input name="rest_name" type="text" > </br>
-  <input type="submit" value="Submit"> </form>'''%url
-  return message
+  if request.method == 'POST':
+    pass
+  else:
+    pass
 
 
-@app.route('/restaurants/update/<int:restaurant_id>/')
-def restaurant_update(restaurant_id):
-  restaurant = db.session.query(Restaurant).filter_by(id=restaurant_id).one()
-  restaurant.name = 'newname'
-  db.session.commit()
- 
-  message += "<h1>Restaurant edited!</h1>"
-
-  return message
-
-
-@app.route('/restaurants/delete/<int:restaurant_id>/')
+@app.route('/restaurants/delete/<int:restaurant_id>/', methods=['GET', 'POST'])
 def restaurant_delete(restaurant_id):
   restaurant = db.session.query(Restaurant).filter_by(id=restaurant_id).one()
-  db.session.delete(restaurant)
-  db.session.commit()
-  return "Restaurant deleted!"
+  if request.method == 'POST':
+    db.session.delete(restaurant)
+    db.session.commit()
+    return "Restaurant deleted!"
+  else:
+    pass
+ 
 
+############################################################################
+                # HERE STARTS THE ROUTES FOR MENU ITEMS #
+############################################################################
 
-### HERE STARTS THE ROUTES FOR MENU ITEMS ###
 
 @app.route('/restaurants/<int:restaurant_id>/new', methods=['GET', 'POST'])
 def newMenuItem(restaurant_id):
@@ -92,6 +91,7 @@ def newMenuItem(restaurant_id):
     newItem = MenuItem(name=request.form['name'], course=request.form['course'], price=request.form['price'], description=request.form['description'], restaurant_id=restaurant_id)
     db.session.add(newItem)
     db.session.commit()
+    flash("this item was successfully created!")
     return redirect(url_for('restaurant', restaurant_id=restaurant_id))
   else:
     return render_template('new_menu_item.html', restaurant_id=restaurant_id)
@@ -111,6 +111,7 @@ def editMenuItem(restaurant_id, item_id):
     if request.form['description']:
       item.description=request.form['description']
     db.session.commit()
+    flash("this item was successfully edited!")
     return redirect(url_for('restaurant', restaurant_id=restaurant_id))
   else:
     return render_template('edit_menu_item.html', restaurant_id=restaurant_id, item_id=item_id, item=item)
@@ -122,6 +123,7 @@ def deleteMenuItem(restaurant_id, item_id):
     item = db.session.query(MenuItem).filter_by(restaurant_id=restaurant_id).filter_by(item_id=item_id)
     db.session.delete(item)
     db.session.commit()
+    flash("this item was successfully deleted!")
     return redirect(url_for('restaurant', restaurant_id=restaurant_id))
   else:
     return render_template('delete_menu_item.html', restaurant_id=restaurant_id, item_id=item_id, item=item)
@@ -152,6 +154,9 @@ if __name__ == '__main__':
   # create and populate the db:
   db.create_all()
   populate_restaurants_db()
+
+  #include a key for our sessions:
+  app.secret_key = "super_secret_key"
 
   app.debug = True
   app.run(host='0.0.0.0', port=5000)
