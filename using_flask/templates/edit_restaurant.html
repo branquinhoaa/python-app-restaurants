@@ -5,7 +5,7 @@
     </head>
 <h1> Edit Restaurant </h1>
 
-<form action="{{url_for('editRestaurant', restaurant_id=restaurant_id)}}" method = 'POST'>
+<form action="{{url_for('editRestaurant', restaurant_id=restaurant.id)}}" method = 'POST'>
 
 <p>Name:</p>
 
@@ -13,19 +13,19 @@
 
 <p>Address:</p>
 
-<input type='text' size='30' name='course'>
+<input type='text' size='30' name='address' placeholder='{{restaurant.address}}'>
 
 
 <p>Stars:</p>
 
-<input type='text' size='30' name='description'>
+<input type='text' size='30' name='stars' placeholder='{{restaurant.stars}}'>
 
 
 <input type='submit' value='Edit'>
 
 </form>
 
-<a href={{ url_for('restaurant',restaurant_id=restaurant_id) }}>Cancel</a>
+<a href={{ url_for('restaurantMenu',restaurant_id=restaurant.id) }}>Cancel</a>
 
 
 </body>

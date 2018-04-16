@@ -1,6 +1,8 @@
 body {
     font-family: sans-serif;
-    background-color: #333333
+    background-color: #333333;
+    margin-left: 30px;
+    margin-top: 30px;
 }
 
 h1,
@@ -18,6 +20,7 @@ h2 {
 
 h1 {
     border-bottom: 2px solid #eee;
+    text-align: center;
 }
 
 h2 {
@@ -33,7 +36,10 @@ dt {
 a {
     text-decoration: none;
     color: #ffffcc;
-    font-size: .75em;
+    font-size: 14px;
+    padding: 20px 10px;
+    border: 1px;
+    margin-top: 15px;
 }
 
 .pane {
@@ -45,6 +51,23 @@ a {
     margin: 5px;
     border-color: #999999;
     background-color: #333333
+}
+
+#btnActions{
+    margin: 5px;
+    padding: 10px
+    border-radius: 5px;
+    background-color: black;
+}
+
+#restaurantBlock{
+    border: 1px;
+    margin: 10px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .header {

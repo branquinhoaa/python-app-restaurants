@@ -3,10 +3,8 @@
 		<head>
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
 	</head>
-			{% for r in restaurants %}
-			<h1>{{ restaurant.name }}</h1>
-
-			<!--MESSAGE FLASHING -->
+	<h1>ALL RESTAURANTS AVAILABLE</h1>
+	<!--MESSAGE FLASHING -->
 			{% with messages = get_flashed_messages() %}
 			{% if messages %}
 
@@ -17,13 +15,26 @@
 			</ul>
 			{% endif %}
 			{% endwith %}
-			<!-- END OF MESSAGE FLASHING -->
-
-			<a href={{ url_for('editRestaurant',restaurant_id=restaurant.id, item_id=i.id) }}>Edit Restaurant</a>
-			<a href={{ url_for('deleteRestaurant',restaurant_id=restaurant.id, item_id=i.id) }}>Delete Restaurant</a>
-			</br>
+	<!-- END OF MESSAGE FLASHING -->
+			{% for restaurant in restaurants %}
+				<div id=restaurantBlock>
+				<h2>{{ restaurant.name }}</h2>
+				<button id="btnActions">
+				<a href={{ url_for('restaurantMenu',restaurant_id=restaurant.id) }}>See Restaurant menu</a>
+				</button>
+				</br>
+				<button id="btnActions">
+				<a href={{ url_for('editRestaurant',restaurant_id=restaurant.id) }}>Edit Restaurant</a>
+				</button>
+				</br>
+				<button id="btnActions">
+				<a href={{ url_for('deleteRestaurant',restaurant_id=restaurant.id) }}>Delete Restaurant</a>
+				</button>
+				</br>
+			    </div>
 			{% endfor %}
-			{% endfor %}
-
+			<button id="btnActions">
+			<a href={{ url_for('newRestaurant') }}>Register a new restaurant</a>
+			</button>
     </body>
 </html>
